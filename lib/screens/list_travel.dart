@@ -12,10 +12,36 @@ class ListTravel extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Trip Explorer",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Explore Trips",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Container(
+              height: 40,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search trips...",
+                    hintStyle: TextStyle(color: Colors.white70, fontSize: 18),
+                    border: InputBorder.none,
+                    icon: Icon(Icons.search, color: Colors.white70),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
         ),
+        toolbarHeight: 100,
         backgroundColor: Colors.lightBlueAccent,
         foregroundColor: Colors.white,
       ),

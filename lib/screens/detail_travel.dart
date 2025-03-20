@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:travel/components/include_exclude.dart';
+import 'package:travel/components/pax.dart';
+import 'package:travel/components/rating_review.dart';
+import 'package:travel/components/summary.dart';
+import 'package:travel/components/term_condition.dart';
 import 'package:travel/providers/travel_provider.dart';
 
 class DetailTravel extends StatelessWidget {
@@ -24,10 +29,36 @@ class DetailTravel extends StatelessWidget {
                   floating: false,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: Hero(
-                      tag: travel.id,
-                      child: Image.network(travel.photo, fit: BoxFit.cover),
+                    background: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Hero(
+                          tag: "image-${travel.id}",
+                          child: Image.network(travel.photo, fit: BoxFit.cover),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withValues(alpha: 0.7),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    title: Text(
+                      travel.title,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    titlePadding: EdgeInsets.only(left: 40, bottom: 13),
+                    collapseMode: CollapseMode.pin,
                   ),
                   elevation: 2,
                   backgroundColor: Colors.lightBlueAccent,
@@ -38,163 +69,18 @@ class DetailTravel extends StatelessWidget {
                   ),
                 ),
                 SliverPadding(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 180),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 180),
                   sliver: SliverList.list(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                        child: Text(
-                          travel.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28,
-                          ),
-                        ),
-                      ),
-                      Material(
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Summary",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 10),
-                              Text(travel.summary),
-                            ],
-                          ),
-                        ),
-                      ),
+                      Summary(travel: travel),
                       SizedBox(height: 10),
-                      Material(
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Rating/Review",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 10),
-                              Text("${travel.rating.toStringAsFixed(1)}/5"),
-                              SizedBox(height: 10),
-                              SizedBox(
-                                height: 180,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: travel.tripReviews.length,
-                                  itemBuilder: (context, index) {
-                                    return ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 240,
-                                        minWidth: 200,
-                                      ),
-                                      child: Card(
-                                        child: Text(
-                                          travel.tripReviews[index].comment,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      RatingReview(travel: travel),
                       SizedBox(height: 10),
-                      Material(
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Include",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 10),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                    children:
-                                        travel.include.map((item) {
-                                          return TextSpan(text: "- $item\n");
-                                        }).toList(),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                "Exclude",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 10),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                    children:
-                                        travel.exclude.map((item) {
-                                          return TextSpan(text: "- $item\n");
-                                        }).toList(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      IncludeExclude(travel: travel),
                       SizedBox(height: 10),
-                      Material(
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "T&C",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 10),
-                              Text(travel.termsConditions),
-                            ],
-                          ),
-                        ),
-                      ),
+                      TermCondition(travel: travel),
                       SizedBox(height: 10),
-                      Material(
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Pax",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 10),
-                              Text(travel.pax),
-                            ],
-                          ),
-                        ),
-                      ),
+                      Pax(travel: travel),
                     ],
                   ),
                 ),
@@ -204,25 +90,50 @@ class DetailTravel extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
+              padding: EdgeInsets.fromLTRB(24, 12, 24, 12),
               height: 80,
-              padding: EdgeInsets.all(16),
-              color: Colors.white,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlueAccent,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  textStyle: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                child: Center(
-                  child: Text(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    spreadRadius: 1,
+                    offset: Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
                     "${travel.currency} ${travel.price.toStringAsFixed(2)}",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlueAccent,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 16,
+                        ),
+                        textStyle: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Book Now",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),

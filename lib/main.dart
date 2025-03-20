@@ -46,7 +46,6 @@ final GoRouter routes = GoRouter(
 class TravelApp extends StatelessWidget {
   const TravelApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(routerConfig: routes);
