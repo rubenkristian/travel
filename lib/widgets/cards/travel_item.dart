@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class TravelItem extends StatelessWidget {
-  final int travelId;
+  final String travelId;
   final String image;
   final String title;
   final double price;
   final double rating;
   final String currency;
+  final bool clickable;
 
   const TravelItem({
     super.key,
@@ -17,15 +18,19 @@ class TravelItem extends StatelessWidget {
     required this.price,
     required this.rating,
     required this.currency,
+    this.clickable = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
       child: InkWell(
         onTap: () {
-          context.go("/travel/$travelId");
+          FocusScope.of(context).unfocus();
+          if (clickable) {
+            context.go("/travel/$travelId");
+          }
         },
         borderRadius: BorderRadius.circular(10),
         child: ClipRRect(

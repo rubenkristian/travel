@@ -2,8 +2,9 @@ import 'package:faker/faker.dart';
 import 'package:travel/model/review_model.dart';
 
 class TravelModel {
-  final int id;
+  final String id;
   final String title;
+  final String address;
   final String photo;
   final String summary;
   final double rating;
@@ -19,6 +20,7 @@ class TravelModel {
   TravelModel({
     required this.id,
     required this.title,
+    required this.address,
     required this.photo,
     required this.summary,
     required this.rating,
@@ -37,15 +39,16 @@ class TravelModel {
 
     return List.generate(count, (index) {
       return TravelModel(
-        id: index + 1,
+        id: faker.guid.guid(),
         title: faker.address.city(),
+        address: faker.address.streetAddress(),
         photo: "https://picsum.photos/400/300?random=${index + 1}",
-        summary: faker.lorem.sentences(2).join(""),
-        rating: faker.randomGenerator.decimal(min: 2.0, scale: 5.0),
+        summary: faker.lorem.sentences(10).join(""),
+        rating: 2 + faker.randomGenerator.decimal() * (3),
         reviews: faker.randomGenerator.integer(1000, min: 10),
         include: List.generate(3, (_) => faker.lorem.word()),
         exclude: List.generate(3, (_) => faker.lorem.word()),
-        termsConditions: faker.lorem.sentences(1).join(" "),
+        termsConditions: faker.lorem.sentences(20).join(" "),
         price: faker.randomGenerator.decimal(min: 100, scale: 500),
         currency: "USD",
         pax:

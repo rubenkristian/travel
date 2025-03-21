@@ -35,7 +35,7 @@ final GoRouter routes = GoRouter(
           path: '/travel/:id',
           builder: (context, state) {
             final travelId = state.pathParameters['id'] ?? '';
-            return DetailTravel(travelId: int.parse(travelId));
+            return DetailTravel(travelId: travelId);
           },
         ),
       ],

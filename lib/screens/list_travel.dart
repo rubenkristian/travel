@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travel/components/travel_item.dart';
+import 'package:travel/widgets/cards/travel_item.dart';
 import 'package:travel/providers/travel_provider.dart';
+import 'package:travel/widgets/search_box.dart';
 
-class ListTravel extends StatelessWidget {
+class ListTravel extends StatefulWidget {
   const ListTravel({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return ListTravelState();
+  }
+}
+
+class ListTravelState extends State<ListTravel> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,26 +32,8 @@ class ListTravel extends StatelessWidget {
               "Explore Trips",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
-            Container(
-              height: 40,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Search trips...",
-                    hintStyle: TextStyle(color: Colors.white70, fontSize: 18),
-                    border: InputBorder.none,
-                    icon: Icon(Icons.search, color: Colors.white70),
-                  ),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
+            SizedBox(height: 10),
+            SearchBox(hint: "Search trip..."),
           ],
         ),
         toolbarHeight: 100,
@@ -47,12 +42,13 @@ class ListTravel extends StatelessWidget {
       ),
       body: RefreshIndicator(
         child: Padding(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: Consumer<TravelProvider>(
             builder: (context, travelProvider, child) {
               final travelList = travelProvider.travelList;
 
-              return ListView.builder(
+              return ListView.separated(
+                separatorBuilder: (context, index) => SizedBox(height: 10),
                 itemCount: travelList.length,
                 itemBuilder: (BuildContext context, int key) {
                   var travel = travelList[key];
@@ -70,10 +66,16 @@ class ListTravel extends StatelessWidget {
           ),
         ),
         onRefresh: () async {
+          FocusManager.instance.primaryFocus?.unfocus();
           await Future.delayed(Duration(seconds: 2));
           travelProvider.loadTravelList();
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

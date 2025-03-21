@@ -28,8 +28,8 @@ class ReviewModel {
         picture: "https://picsum.photos/80/80?random=${index + 1}",
         reviewId: faker.guid.guid(),
         reviewName: faker.person.name(),
-        rating: faker.randomGenerator.decimal(min: 2.0, scale: 5.0),
-        comment: faker.lorem.sentence(),
+        rating: 2 + faker.randomGenerator.decimal() * (3),
+        comment: faker.lorem.sentences(3).join(" "),
         createdAt: faker.date.dateTime(),
       );
     });
