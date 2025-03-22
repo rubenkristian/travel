@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 class SearchBox extends StatelessWidget {
   final String hint;
   final Function(String) onSearch;
+  final TextEditingController controller;
 
-  const SearchBox({super.key, required this.hint, required this.onSearch});
+  const SearchBox({
+    super.key,
+    required this.hint,
+    required this.onSearch,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +28,7 @@ class SearchBox extends StatelessWidget {
           onChanged: (value) {
             onSearch(value);
           },
+          controller: controller,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.white70),

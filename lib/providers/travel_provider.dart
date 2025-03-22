@@ -6,11 +6,13 @@ class TravelProvider extends ChangeNotifier {
   List<TravelModel> _searchTravelList = [];
   bool _isLoading = true;
   bool _isSearch = false;
+  String _searchInput = "";
 
   List<TravelModel> get travelList => _travelList;
   List<TravelModel> get searchTravelList => _searchTravelList;
   bool get isLoading => _isLoading;
   bool get isSearch => _isSearch;
+  String get searchInput => _searchInput;
 
   void loadTravelList() {
     _isLoading = false;
@@ -30,12 +32,9 @@ class TravelProvider extends ChangeNotifier {
   }
 
   void search(String input) {
-    if (input.isEmpty) {
-      refresh();
-      return;
-    }
-
+    _searchInput = input;
     _isLoading = true;
+
     notifyListeners();
 
     Future.delayed(Duration(seconds: 2), () {
@@ -44,6 +43,21 @@ class TravelProvider extends ChangeNotifier {
       _searchTravelList =
           _travelList.where((travel) {
             return travel.title.toLowerCase().contains(input);
+          }).toList();
+
+      notifyListeners();
+    });
+  }
+
+  void searchRefresh() {
+    _isLoading = true;
+    notifyListeners();
+    Future.delayed(Duration(seconds: 2), () {
+      _isLoading = false;
+      _isSearch = true;
+      _searchTravelList =
+          _travelList.where((travel) {
+            return travel.title.toLowerCase().contains(_searchInput);
           }).toList();
       notifyListeners();
     });

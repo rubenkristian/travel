@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -16,6 +18,8 @@ class ListTravel extends StatefulWidget {
 
 class ListTravelState extends State<ListTravel> {
   String? search;
+  final TextEditingController _controller = TextEditingController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -39,8 +43,13 @@ class ListTravelState extends State<ListTravel> {
             SearchBox(
               hint: "Search trip...",
               onSearch: (input) {
-                travelProvider.search(input);
+                if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+                _debounce = Timer(Duration(milliseconds: 500), () {
+                  travelProvider.search(input);
+                });
               },
+              controller: _controller,
             ),
           ],
         ),
@@ -74,7 +83,11 @@ class ListTravelState extends State<ListTravel> {
               }
 
               if (isSearch && searchTravelList.isEmpty) {
-                return Center(child: Text("No trip found"));
+                return Center(
+                  child: Text(
+                    "No trip found with input ${travelProvider.searchInput}",
+                  ),
+                );
               }
 
               return ListView.separated(
@@ -98,8 +111,11 @@ class ListTravelState extends State<ListTravel> {
           ),
         ),
         onRefresh: () async {
-          FocusManager.instance.primaryFocus?.unfocus();
-          travelProvider.refresh();
+          if (!travelProvider.isSearch) {
+            travelProvider.refresh();
+            return;
+          }
+          travelProvider.searchRefresh();
         },
       ),
     );
