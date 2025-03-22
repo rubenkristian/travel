@@ -42,6 +42,9 @@ class DetailTravel extends StatelessWidget {
                     onPressed: () => context.pop(),
                     icon: Icon(Icons.arrow_back_ios, color: Colors.white),
                   ),
+                  actions: [
+                    IconButton(onPressed: () {}, icon: Icon(Icons.bookmark)),
+                  ],
                 ),
                 SliverPadding(
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 100),

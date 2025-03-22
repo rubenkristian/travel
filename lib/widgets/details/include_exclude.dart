@@ -26,11 +26,21 @@ class IncludeExclude extends StatelessWidget {
             children:
                 travel.include
                     .map(
-                      (label) => ChipDetail(label: label, color: Colors.green),
+                      (label) => ChipDetail(
+                        label: label,
+                        color: Colors.green,
+                        icon: Icons.check,
+                      ),
                     )
                     .toList() +
                 travel.exclude
-                    .map((label) => ChipDetail(label: label, color: Colors.red))
+                    .map(
+                      (label) => ChipDetail(
+                        label: label,
+                        color: Colors.red,
+                        icon: Icons.close,
+                      ),
+                    )
                     .toList(),
           ),
         ],

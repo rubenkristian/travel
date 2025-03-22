@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:travel/widgets/cards/travel_item.dart';
 import 'package:travel/providers/travel_provider.dart';
 import 'package:travel/widgets/search_box.dart';
@@ -14,6 +15,8 @@ class ListTravel extends StatefulWidget {
 }
 
 class ListTravelState extends State<ListTravel> {
+  String? search;
+
   @override
   void initState() {
     super.initState();
@@ -33,7 +36,12 @@ class ListTravelState extends State<ListTravel> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            SearchBox(hint: "Search trip..."),
+            SearchBox(
+              hint: "Search trip...",
+              onSearch: (input) {
+                travelProvider.search(input);
+              },
+            ),
           ],
         ),
         toolbarHeight: 100,
@@ -42,16 +50,40 @@ class ListTravelState extends State<ListTravel> {
       ),
       body: RefreshIndicator(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          padding: EdgeInsets.all(10),
           child: Consumer<TravelProvider>(
             builder: (context, travelProvider, child) {
               final travelList = travelProvider.travelList;
+              final searchTravelList = travelProvider.searchTravelList;
+              final isLoading = travelProvider.isLoading;
+              final isSearch = travelProvider.isSearch;
+
+              if (isLoading) {
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  enabled: true,
+                  child: ListView.separated(
+                    itemBuilder: (BuildContext context, int key) {
+                      return Card(child: SizedBox(height: 320));
+                    },
+                    separatorBuilder: (context, index) => SizedBox(height: 10),
+                    itemCount: 5,
+                  ),
+                );
+              }
+
+              if (isSearch && searchTravelList.isEmpty) {
+                return Center(child: Text("No trip found"));
+              }
 
               return ListView.separated(
                 separatorBuilder: (context, index) => SizedBox(height: 10),
-                itemCount: travelList.length,
+                itemCount:
+                    isSearch ? searchTravelList.length : travelList.length,
                 itemBuilder: (BuildContext context, int key) {
-                  var travel = travelList[key];
+                  var travel =
+                      isSearch ? searchTravelList[key] : travelList[key];
                   return TravelItem(
                     travelId: travel.id,
                     image: travel.photo,
@@ -67,8 +99,7 @@ class ListTravelState extends State<ListTravel> {
         ),
         onRefresh: () async {
           FocusManager.instance.primaryFocus?.unfocus();
-          await Future.delayed(Duration(seconds: 2));
-          travelProvider.loadTravelList();
+          travelProvider.refresh();
         },
       ),
     );

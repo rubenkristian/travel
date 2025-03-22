@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 class ChipDetail extends StatelessWidget {
   final String label;
   final Color color;
+  final IconData icon;
 
-  const ChipDetail({super.key, required this.label, required this.color});
+  const ChipDetail({
+    super.key,
+    required this.label,
+    required this.color,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +20,10 @@ class ChipDetail extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.close, size: 14, color: Colors.white),
+            Icon(icon, size: 14, color: Colors.white),
             SizedBox(width: 5),
             Text(label, style: TextStyle(color: Colors.white)),
           ],

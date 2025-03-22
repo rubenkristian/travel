@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class SearchBox extends StatelessWidget {
   final String hint;
+  final Function(String) onSearch;
 
-  const SearchBox({super.key, required this.hint});
+  const SearchBox({super.key, required this.hint, required this.onSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,9 @@ class SearchBox extends StatelessWidget {
         child: TextField(
           autofocus: false,
           onTapOutside: (_) => FocusManager.instance.primaryFocus!.unfocus(),
+          onChanged: (value) {
+            onSearch(value);
+          },
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.white70),
